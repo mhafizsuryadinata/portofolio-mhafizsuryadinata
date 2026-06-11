@@ -1,65 +1,81 @@
-import Image from "next/image";
+import { prisma } from "@/lib/prisma";
+import PortfolioClient from "@/components/PortfolioClient";
+import {
+  MOCK_PROFILE,
+  MOCK_CONTACT,
+  MOCK_EDUCATION,
+  MOCK_SKILLS,
+  MOCK_PROJECTS,
+  MOCK_CERTIFICATES,
+  MOCK_EXPERIENCE,
+  MOCK_ACHIEVEMENTS,
+  MOCK_GOALS,
+} from "@/lib/mockData";
 
-export default function Home() {
+// Prevent static caching so it is dynamic and pulls latest changes from admin panel
+export const revalidate = 0;
+
+export default async function HomePage() {
+  let profile: any = MOCK_PROFILE;
+  let contact: any = MOCK_CONTACT;
+  let education: any[] = MOCK_EDUCATION;
+  let skills: any[] = MOCK_SKILLS;
+  let projects: any[] = MOCK_PROJECTS;
+  let certificates: any[] = MOCK_CERTIFICATES;
+  let experience: any[] = MOCK_EXPERIENCE;
+  let achievements: any[] = MOCK_ACHIEVEMENTS;
+  let goals: any[] = MOCK_GOALS;
+
+  try {
+    const [
+      dbProfile,
+      dbContact,
+      dbEducation,
+      dbSkills,
+      dbProjects,
+      dbCertificates,
+      dbExperience,
+      dbAchievements,
+      dbGoals,
+    ] = await Promise.all([
+      prisma.profile.findUnique({ where: { id: "profile" } }),
+      prisma.contact.findUnique({ where: { id: "contact" } }),
+      prisma.education.findMany({ orderBy: { order: "asc" } }),
+      prisma.skill.findMany({ orderBy: { createdAt: "asc" } }),
+      prisma.project.findMany({ orderBy: { order: "asc" } }),
+      prisma.certificate.findMany({ orderBy: { order: "asc" } }),
+      prisma.experience.findMany({ orderBy: { order: "asc" } }),
+      prisma.achievement.findMany({ orderBy: { createdAt: "desc" } }),
+      prisma.goal.findMany({ orderBy: { targetYear: "asc" } }),
+    ]);
+
+    if (dbProfile) profile = dbProfile;
+    if (dbContact) contact = dbContact;
+    if (dbEducation && dbEducation.length > 0) education = dbEducation as any[];
+    if (dbSkills && dbSkills.length > 0) skills = dbSkills as any[];
+    if (dbProjects && dbProjects.length > 0) projects = dbProjects as any[];
+    if (dbCertificates && dbCertificates.length > 0) certificates = dbCertificates as any[];
+    if (dbExperience && dbExperience.length > 0) experience = dbExperience as any[];
+    if (dbAchievements && dbAchievements.length > 0) achievements = dbAchievements as any[];
+    if (dbGoals && dbGoals.length > 0) goals = dbGoals as any[];
+  } catch (error) {
+    console.warn(
+      "Database connection failed or not yet migrated. Falling back to default mock data.",
+      error
+    );
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <PortfolioClient
+      profile={profile}
+      contact={contact}
+      education={education}
+      skills={skills}
+      projects={projects}
+      certificates={certificates}
+      experience={experience}
+      achievements={achievements}
+      goals={goals}
+    />
   );
 }

@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Admin {
+  id        String   @id @default(dbgenerated("(uuid_generate_v4())::text"))
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(6)
+}
+
+model Profile {
+  id          String   @id @default("profile")
+  fullName    String   @default("M.Hafiz Suryadinata")
+  status      String   @default("Mahasiswa")
+  bio         String   @default("")
+  vision      String   @default("")
+  careerGoals String   @default("")
+  avatarUrl   String   @default("/avatar.jpg")
+  cvUrl       String   @default("/cv.pdf")
+  updatedAt   DateTime @default(now()) @updatedAt @db.Timestamptz(6)
+}
+
+model Education {
+  id          String   @id @default(dbgenerated("(uuid_generate_v4())::text"))
+  schoolName  String
+  degree      String
+  period      String
+  description String   @default("")
+  order       Int      @default(0)
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([order], map: "idx_education_order")
+}
+
+model Skill {
+  id         String   @id @default(dbgenerated("(uuid_generate_v4())::text"))
+  name       String
+  category   String
+  percentage Int      @default(80)
+  createdAt  DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([category], map: "idx_skill_category")
+}
+
+model Project {
+  id          String   @id @default(dbgenerated("(uuid_generate_v4())::text"))
+  title       String
+  description String   @default("")
+  imageUrl    String   @default("/projects/placeholder.png")
+  techStack   String   @default("")
+  category    String   @default("Web")
+  demoUrl     String?
+  githubUrl   String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([category], map: "idx_project_category")
+  @@index([order], map: "idx_project_order")
+}
+
+model Certificate {
+  id            String   @id @default(dbgenerated("(uuid_generate_v4())::text"))
+  title         String
+  issuer        String
+  issueDate     String
+  imageUrl      String   @default("/certs/placeholder.png")
+  credentialUrl String?
+  order         Int      @default(0)
+  createdAt     DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([order], map: "idx_certificate_order")
+}
+
+model Experience {
+  id           String   @id @default(dbgenerated("(uuid_generate_v4())::text"))
+  organization String
+  role         String
+  period       String
+  description  String   @default("")
+  order        Int      @default(0)
+  createdAt    DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([order], map: "idx_experience_order")
+}
+
+model Achievement {
+  id          String   @id @default(dbgenerated("(uuid_generate_v4())::text"))
+  title       String
+  awarder     String
+  date        String
+  description String   @default("")
+  icon        String   @default("Award")
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([createdAt(sort: Desc)], map: "idx_achievement_created")
+}
+
+model Goal {
+  id          String   @id @default(dbgenerated("(uuid_generate_v4())::text"))
+  title       String
+  description String   @default("")
+  targetYear  String
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([targetYear], map: "idx_goal_year")
+}
+
+model Contact {
+  id        String   @id @default("contact")
+  email     String   @default("mhafizsuryadinata@gmail.com")
+  whatsapp  String   @default("")
+  github    String   @default("")
+  linkedin  String   @default("")
+  instagram String   @default("")
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(6)
+}
