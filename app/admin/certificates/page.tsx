@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Award, Plus, Edit2, Trash2, Save, X, Loader2, AlertCircle, ExternalLink } from "lucide-react";
+import { Award, Plus, Edit2, Trash2, Save, X, Loader2, AlertCircle, ExternalLink, Upload } from "lucide-react";
 
 type Certificate = {
   id: string;
@@ -18,6 +18,7 @@ export default function AdminCertificatesPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   // Form State
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -29,6 +30,35 @@ export default function AdminCertificatesPage() {
   const [order, setOrder] = useState(0);
 
   const [showForm, setShowForm] = useState(false);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setError(null);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setImageUrl(data.url);
+      } else {
+        setError(data.message || "Gagal mengunggah gambar.");
+      }
+    } catch (err) {
+      setError("Kesalahan koneksi saat mengunggah gambar.");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const fetchItems = async () => {
     try {
@@ -218,15 +248,28 @@ export default function AdminCertificatesPage() {
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">URL Gambar Sertifikat</label>
-              <input
-                type="text"
-                required
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                placeholder="Contoh: /certs/oracle-db.png atau URL luar"
-                className="w-full text-sm rounded-lg border border-slate-350 bg-slate-50 px-3.5 py-2.5 text-slate-950 placeholder-slate-455 focus:border-blue-500 focus:bg-white focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:bg-slate-900"
-              />
+              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">Gambar Sertifikat</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  required
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  placeholder="Contoh: /certs/oracle-db.png atau URL luar"
+                  className="flex-1 text-sm rounded-lg border border-slate-355 bg-slate-50 px-3.5 py-2.5 text-slate-950 placeholder-slate-455 focus:border-blue-500 focus:bg-white focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:bg-slate-900"
+                />
+                <label className="flex items-center gap-1.5 cursor-pointer justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 shrink-0 select-none">
+                  {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                  {uploading ? "Mengunggah..." : "Pilih File"}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageUpload}
+                    disabled={uploading}
+                  />
+                </label>
+              </div>
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">Link Kredensial Detail (Opsional)</label>
@@ -285,14 +328,21 @@ export default function AdminCertificatesPage() {
               key={item.id}
               className="rounded-xl border border-slate-100 bg-white overflow-hidden dark:border-slate-800 dark:bg-slate-900 shadow-sm flex flex-col hover:shadow-md transition-shadow"
             >
-              <div className="h-40 bg-slate-50 dark:bg-slate-950 flex items-center justify-center relative border-b border-slate-100 dark:border-slate-850">
-                <span className="text-xs absolute right-3 top-3 text-slate-400">
+              <div className="relative border-b border-slate-100 dark:border-slate-850 bg-slate-50 dark:bg-slate-950">
+                <span className="text-xs absolute right-3 top-3 text-slate-100 z-10 bg-slate-900/60 px-2 py-0.5 rounded">
                   Urutan: {item.order}
                 </span>
-                <Award className="h-10 w-10 text-slate-400" />
-                <span className="text-xs text-slate-400 absolute bottom-4 select-none italic text-center px-4 line-clamp-1">
-                  Path: {item.imageUrl}
-                </span>
+                {item.imageUrl ? (
+                  <img
+                    src={item.imageUrl}
+                    alt={item.title}
+                    className="w-full h-auto object-contain max-h-56"
+                  />
+                ) : (
+                  <div className="h-36 flex items-center justify-center">
+                    <Award className="h-10 w-10 text-slate-400" />
+                  </div>
+                )}
               </div>
               <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
                 <div className="space-y-1">

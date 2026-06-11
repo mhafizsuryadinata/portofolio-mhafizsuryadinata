@@ -399,20 +399,27 @@ export default function PortfolioClient({
                   viewport={{ once: true }}
                   className="rounded-2xl border border-slate-100 bg-white dark:border-slate-900 dark:bg-slate-900/50 shadow-sm overflow-hidden flex flex-col hover:shadow-lg transition-all group"
                 >
-                  <div className="h-52 bg-slate-100 dark:bg-slate-950 flex items-center justify-center relative overflow-hidden">
-                    <span className="text-[10px] absolute left-4 top-4 px-2 py-0.5 rounded-full bg-blue-600 text-white font-bold shadow">
+                  <div className="relative bg-slate-100 dark:bg-slate-950">
+                    <span className="text-[10px] absolute left-4 top-4 px-2 py-0.5 rounded-full bg-blue-600 text-white font-bold shadow z-10">
                       {project.category}
                     </span>
-                    <FolderCode className="h-12 w-12 text-slate-300 dark:text-slate-700 group-hover:scale-110 transition-transform duration-500" />
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={project.imageUrl}
                       alt={project.title}
-                      className="absolute inset-0 w-full h-full object-cover opacity-75 group-hover:scale-105 transition-transform duration-500 pointer-events-none"
+                      className="w-full h-auto object-contain max-h-72 group-hover:scale-105 transition-transform duration-500"
                       onError={(e) => {
                         (e.target as HTMLElement).style.display = "none";
+                        const parent = (e.target as HTMLElement).parentElement;
+                        if (parent) {
+                          const icon = parent.querySelector(".fallback-icon");
+                          if (icon) (icon as HTMLElement).style.display = "flex";
+                        }
                       }}
                     />
+                    <div className="fallback-icon h-52 items-center justify-center" style={{ display: "none" }}>
+                      <FolderCode className="h-12 w-12 text-slate-300 dark:text-slate-700" />
+                    </div>
                   </div>
                   <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                     <div className="space-y-2">
@@ -479,17 +486,24 @@ export default function PortfolioClient({
                 className="rounded-2xl border border-slate-100 bg-slate-50 dark:border-slate-800 dark:bg-slate-950/40 p-5 flex flex-col justify-between hover:shadow-md transition-shadow group"
               >
                 <div className="space-y-4">
-                  <div className="h-32 bg-slate-100 dark:bg-slate-950/80 rounded-lg flex items-center justify-center relative overflow-hidden border border-slate-150 dark:border-slate-850">
-                    <Award className="h-10 w-10 text-slate-400 group-hover:scale-110 transition-transform" />
+                  <div className="bg-slate-100 dark:bg-slate-950/80 rounded-lg relative overflow-hidden border border-slate-150 dark:border-slate-850">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={cert.imageUrl}
                       alt={cert.title}
-                      className="absolute inset-0 w-full h-full object-cover opacity-75 pointer-events-none"
+                      className="w-full h-auto object-contain max-h-56"
                       onError={(e) => {
                         (e.target as HTMLElement).style.display = "none";
+                        const parent = (e.target as HTMLElement).parentElement;
+                        if (parent) {
+                          const icon = parent.querySelector(".fallback-icon");
+                          if (icon) (icon as HTMLElement).style.display = "flex";
+                        }
                       }}
                     />
+                    <div className="fallback-icon h-32 items-center justify-center" style={{ display: "none" }}>
+                      <Award className="h-10 w-10 text-slate-400" />
+                    </div>
                   </div>
                   <div className="space-y-1">
                     <h3 className="text-sm font-bold leading-snug line-clamp-2 text-slate-900 dark:text-white">

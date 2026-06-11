@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { User, Mail, ShieldAlert, Loader2, Save, CheckCircle2 } from "lucide-react";
+import { User, Mail, ShieldAlert, Loader2, Save, CheckCircle2, Upload } from "lucide-react";
 
 export default function AdminProfilePage() {
   // Profile State
@@ -27,6 +27,45 @@ export default function AdminProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [uploadingCv, setUploadingCv] = useState(false);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "avatar" | "cv") => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (type === "avatar") setUploadingAvatar(true);
+    else setUploadingCv(true);
+
+    setMessage(null);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        if (type === "avatar") {
+          setAvatarUrl(data.url);
+        } else {
+          setCvUrl(data.url);
+        }
+      } else {
+        setMessage({ type: "error", text: data.message || "Gagal mengunggah file." });
+      }
+    } catch (err) {
+      setMessage({ type: "error", text: "Kesalahan koneksi saat mengunggah file." });
+    } finally {
+      if (type === "avatar") setUploadingAvatar(false);
+      else setUploadingCv(false);
+    }
+  };
 
   useEffect(() => {
     async function loadData() {
@@ -219,24 +258,50 @@ export default function AdminProfilePage() {
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">URL Foto Profil (Avatar)</label>
-              <input
-                type="text"
-                required
-                value={avatarUrl}
-                onChange={(e) => setAvatarUrl(e.target.value)}
-                className="w-full text-sm rounded-lg border border-slate-350 bg-slate-50 px-3.5 py-2.5 text-slate-950 placeholder-slate-400 focus:border-blue-500 focus:bg-white focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:bg-slate-900"
-              />
+              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">Foto Profil (Avatar)</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  required
+                  value={avatarUrl}
+                  onChange={(e) => setAvatarUrl(e.target.value)}
+                  className="flex-1 text-sm rounded-lg border border-slate-350 bg-slate-50 px-3.5 py-2.5 text-slate-950 placeholder-slate-400 focus:border-blue-500 focus:bg-white focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:bg-slate-900"
+                />
+                <label className="flex items-center gap-1.5 cursor-pointer justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 shrink-0 select-none">
+                  {uploadingAvatar ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                  {uploadingAvatar ? "Mengunggah..." : "Pilih File"}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => handleFileUpload(e, "avatar")}
+                    disabled={uploadingAvatar}
+                  />
+                </label>
+              </div>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">URL File CV (Unduhan)</label>
-              <input
-                type="text"
-                required
-                value={cvUrl}
-                onChange={(e) => setCvUrl(e.target.value)}
-                className="w-full text-sm rounded-lg border border-slate-350 bg-slate-50 px-3.5 py-2.5 text-slate-950 placeholder-slate-400 focus:border-blue-500 focus:bg-white focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:bg-slate-900"
-              />
+              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">File CV (Unduhan)</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  required
+                  value={cvUrl}
+                  onChange={(e) => setCvUrl(e.target.value)}
+                  className="flex-1 text-sm rounded-lg border border-slate-350 bg-slate-50 px-3.5 py-2.5 text-slate-950 placeholder-slate-400 focus:border-blue-500 focus:bg-white focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:bg-slate-900"
+                />
+                <label className="flex items-center gap-1.5 cursor-pointer justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 shrink-0 select-none">
+                  {uploadingCv ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                  {uploadingCv ? "Mengunggah..." : "Pilih File"}
+                  <input
+                    type="file"
+                    accept=".pdf,.doc,.docx,image/*"
+                    className="hidden"
+                    onChange={(e) => handleFileUpload(e, "cv")}
+                    disabled={uploadingCv}
+                  />
+                </label>
+              </div>
             </div>
           </div>
         </div>

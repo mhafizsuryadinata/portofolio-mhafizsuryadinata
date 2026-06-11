@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { FolderCode, Plus, Edit2, Trash2, Save, X, Loader2, AlertCircle, ExternalLink, Link2 } from "lucide-react";
+import { FolderCode, Plus, Edit2, Trash2, Save, X, Loader2, AlertCircle, ExternalLink, Link2, Upload } from "lucide-react";
 
 type Project = {
   id: string;
@@ -22,6 +22,7 @@ export default function AdminProjectsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   // Form State
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -35,6 +36,35 @@ export default function AdminProjectsPage() {
   const [order, setOrder] = useState(0);
 
   const [showForm, setShowForm] = useState(false);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setError(null);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setImageUrl(data.url);
+      } else {
+        setError(data.message || "Gagal mengunggah gambar.");
+      }
+    } catch (err) {
+      setError("Kesalahan koneksi saat mengunggah gambar.");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const fetchItems = async () => {
     try {
@@ -233,15 +263,28 @@ export default function AdminProjectsPage() {
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">URL Gambar Screenshot</label>
-              <input
-                type="text"
-                required
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                placeholder="Contoh: /projects/darli.png atau URL eksternal"
-                className="w-full text-sm rounded-lg border border-slate-350 bg-slate-50 px-3.5 py-2.5 text-slate-950 placeholder-slate-455 focus:border-blue-500 focus:bg-white focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:bg-slate-900"
-              />
+              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">Gambar Screenshot Proyek</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  required
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  placeholder="Contoh: /projects/darli.png atau URL eksternal"
+                  className="flex-1 text-sm rounded-lg border border-slate-350 bg-slate-50 px-3.5 py-2.5 text-slate-950 placeholder-slate-455 focus:border-blue-500 focus:bg-white focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:bg-slate-900"
+                />
+                <label className="flex items-center gap-1.5 cursor-pointer justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 shrink-0 select-none">
+                  {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                  {uploading ? "Mengunggah..." : "Pilih File"}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageUpload}
+                    disabled={uploading}
+                  />
+                </label>
+              </div>
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">Link Demo Aplikasi (Opsional)</label>
@@ -321,18 +364,25 @@ export default function AdminProjectsPage() {
               key={item.id}
               className="rounded-xl border border-slate-100 bg-white overflow-hidden dark:border-slate-800 dark:bg-slate-900 shadow-sm flex flex-col hover:shadow-md transition-shadow"
             >
-              {/* Image preview placeholder */}
-              <div className="h-48 bg-slate-100 dark:bg-slate-950 flex items-center justify-center relative border-b border-slate-100 dark:border-slate-850">
-                <span className="text-xs absolute left-3 top-3 px-2 py-0.5 rounded-full bg-blue-600 text-white font-semibold shadow">
+              {/* Image preview */}
+              <div className="relative border-b border-slate-100 dark:border-slate-850 bg-slate-100 dark:bg-slate-950">
+                <span className="text-xs absolute left-3 top-3 px-2 py-0.5 rounded-full bg-blue-600 text-white font-semibold shadow z-10">
                   {item.category}
                 </span>
-                <span className="text-xs absolute right-3 top-3 text-slate-400">
+                <span className="text-xs absolute right-3 top-3 text-slate-100 z-10 bg-slate-900/60 px-2 py-0.5 rounded">
                   Urutan: {item.order}
                 </span>
-                <FolderCode className="h-10 w-10 text-slate-400" />
-                <span className="text-xs text-slate-400 absolute bottom-4 select-none italic">
-                  Preview: {item.imageUrl}
-                </span>
+                {item.imageUrl ? (
+                  <img
+                    src={item.imageUrl}
+                    alt={item.title}
+                    className="w-full h-auto object-contain max-h-64"
+                  />
+                ) : (
+                  <div className="h-40 flex items-center justify-center">
+                    <FolderCode className="h-10 w-10 text-slate-400" />
+                  </div>
+                )}
               </div>
               <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                 <div className="space-y-2">
