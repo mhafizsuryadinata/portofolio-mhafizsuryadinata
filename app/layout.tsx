@@ -31,6 +31,9 @@ export const metadata: Metadata = {
     title: "M. Hafiz Suryadinata | Portofolio Pribadi",
     description: "Portofolio profesional M. Hafiz Suryadinata - Web & Mobile Developer.",
   },
+  verification: {
+    google: "googlea459a231f2ac20ab",
+  },
 };
 
 export default function RootLayout({
