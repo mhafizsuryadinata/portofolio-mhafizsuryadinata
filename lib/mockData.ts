@@ -1,9 +1,9 @@
 export const MOCK_PROFILE = {
   fullName: "M. Hafiz Suryadinata",
-  status: "Mahasiswa & Web Developer",
-  bio: "Saya adalah seorang mahasiswa teknologi informasi yang bersemangat dalam pengembangan web dan mobile. Berpengalaman membangun aplikasi modern berbasis Next.js, Laravel, dan teknologi cloud. Memiliki komitmen tinggi terhadap kualitas kode, desain antarmuka yang intuitif, serta performa aplikasi.",
-  vision: "Menjadi ahli rekayasa perangkat lunak yang mampu menghadirkan solusi teknologi berdampak luas bagi masyarakat.",
-  careerGoals: "Mengembangkan aplikasi berskala enterprise, berkontribusi aktif pada open-source, dan berkolaborasi dalam tim profesional global.",
+  status: "Calon Mahasiswa Kehutanan UNILA & Developer Web/Android",
+  bio: "Saya adalah M. Hafiz Suryadinata, berumur 19 tahun dan baru saja tamat dari kelas 3 SMA di Pondok Pesantren Dar El Ilmi Payakumbuh. Saya akan melanjutkan kuliah ke Universitas Lampung (UNILA) program studi S1 Kehutanan. Saya memiliki keahlian dalam pemrograman web dan pengembangan Android, serta bersemangat memadukan solusi teknologi dengan pelestarian lingkungan.",
+  vision: "Mengintegrasikan keahlian pengembangan aplikasi web dan Android dengan ilmu kehutanan untuk menciptakan solusi teknologi inovatif yang mendukung konservasi lingkungan dan pengelolaan sumber daya hutan secara berkelanjutan.",
+  careerGoals: "Membangun platform digital pemantauan lingkungan, berkontribusi aktif pada open-source, dan berkolaborasi dalam tim profesional untuk memecahkan masalah ekologis menggunakan keahlian pemrograman.",
   avatarUrl: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=300",
   cvUrl: "#",
 };
@@ -19,18 +19,18 @@ export const MOCK_CONTACT = {
 export const MOCK_EDUCATION = [
   {
     id: "edu-1",
-    schoolName: "Universitas Negeri Padang",
-    degree: "S1 Teknik Informatika",
-    period: "2022 - Sekarang",
-    description: "Fokus pada algoritma, pemrograman web/mobile, sistem basis data, dan rekayasa perangkat lunak. Aktif dalam laboratorium pemrograman.",
+    schoolName: "Universitas Lampung (UNILA)",
+    degree: "S1 Kehutanan",
+    period: "2026 - Sekarang",
+    description: "Mempelajari manajemen hutan, konservasi alam, dan berencana mengintegrasikan keahlian pemrograman web dan Android untuk merancang solusi teknologi kehutanan (forestry tech).",
     order: 1,
   },
   {
     id: "edu-2",
-    schoolName: "SMA Negeri 1 Padang",
-    degree: "MIPA (Matematika dan Ilmu Pengetahuan Alam)",
-    period: "2019 - 2022",
-    description: "Mengikuti olimpiade informatika tingkat kota dan aktif di klub robotika sekolah.",
+    schoolName: "Pondok Pesantren Dar El Ilmi Payakumbuh",
+    degree: "Pendidikan Menengah Atas (SMA)",
+    period: "2023 - 2026",
+    description: "Menyelesaikan pendidikan menengah atas dengan mendalami studi keagamaan serta sains, aktif dalam kegiatan kepesantrenan, dan mulai mendalami pemrograman web & Android.",
     order: 2,
   },
 ];

@@ -213,11 +213,11 @@ ON CONFLICT ("username") DO NOTHING;
 INSERT INTO "Profile" ("id", "fullName", "status", "bio", "vision", "careerGoals", "avatarUrl", "cvUrl", "updatedAt")
 VALUES (
   'profile',
-  'M.Hafiz Suryadinata',
-  'Mahasiswa Teknik Informatika & Web Developer',
-  'Saya adalah seorang mahasiswa Teknik Informatika yang bersemangat dalam pengembangan web dan mobile modern. Saya gemar membangun solusi digital yang efisien, estetis, dan berdampak nyata — mulai dari antarmuka yang responsif hingga arsitektur backend yang kuat. Senang berkolaborasi, terus belajar, dan selalu antusias menghadapi tantangan teknis baru.',
-  'Menjadi Software Engineer profesional yang mampu merancang dan mengimplementasikan sistem teknologi berskala besar, berkontribusi aktif pada ekosistem open-source, serta memberikan dampak positif melalui produk digital yang inovatif dan inklusif.',
-  'Terus mengembangkan keahlian Full-Stack, memperdalam arsitektur cloud (AWS/GCP), membangun portofolio proyek nyata yang berdampak, serta memperoleh pengalaman profesional di perusahaan teknologi terkemuka untuk memperkuat fondasi karir jangka panjang.',
+  'M. Hafiz Suryadinata',
+  'Calon Mahasiswa Kehutanan UNILA & Developer Web/Android',
+  'Saya adalah M. Hafiz Suryadinata, berumur 19 tahun dan baru saja tamat dari kelas 3 SMA di Pondok Pesantren Dar El Ilmi Payakumbuh. Saya akan melanjutkan kuliah ke Universitas Lampung (UNILA) program studi S1 Kehutanan. Saya memiliki keahlian dalam pemrograman web dan pengembangan Android, serta bersemangat memadukan solusi teknologi dengan pelestarian lingkungan.',
+  'Mengintegrasikan keahlian pengembangan aplikasi web and Android dengan ilmu kehutanan untuk menciptakan solusi teknologi inovatif yang mendukung konservasi lingkungan dan pengelolaan sumber daya hutan secara berkelanjutan.',
+  'Membangun platform digital pemantauan lingkungan, berkontribusi aktif pada open-source, dan berkolaborasi dalam tim profesional untuk memecahkan masalah ekologis menggunakan keahlian pemrograman.',
   '/avatar.jpg',
   '/cv.pdf',
   NOW()
@@ -275,19 +275,19 @@ VALUES
   ),
   (
     uuid_generate_v4()::TEXT,
-    'SMA / Pondok Pesantren Terpadu',
-    'Sekolah Menengah Atas (MIPA)',
-    '2019 – 2022',
-    'Mendalami studi keagamaan sekaligus sains, memimpin organisasi santri, dan mulai tertarik pada dunia pemrograman web.',
+    'Pondok Pesantren Dar El Ilmi Payakumbuh',
+    'Pendidikan Menengah Atas (SMA)',
+    '2023 – 2026',
+    'Menyelesaikan pendidikan menengah atas dengan mendalami studi keagamaan serta sains, aktif dalam kegiatan kepesantrenan, dan mulai mendalami pemrograman web & Android.',
     3,
     NOW()
   ),
   (
     uuid_generate_v4()::TEXT,
-    'Universitas Negeri',
-    'S1 Teknik Informatika / Sistem Informasi',
-    '2022 – Sekarang',
-    'Fokus pada pengembangan perangkat lunak, rekayasa web & mobile, arsitektur basis data, dan aktif dalam UKM pemrograman kampus.',
+    'Universitas Lampung (UNILA)',
+    'S1 Kehutanan',
+    '2026 – Sekarang',
+    'Mempelajari manajemen hutan, konservasi alam, dan berencana mengintegrasikan keahlian pemrograman web dan Android untuk merancang solusi teknologi kehutanan (forestry tech).',
     4,
     NOW()
   );
